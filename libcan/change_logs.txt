@@ -1,0 +1,35 @@
+2025.4.10 版本:1.0.0.9
+1.增加支持周立功USBCAN1,USBCAN2,USBCANFDMINI,USBCANFD200U,USBCANFD400U,USBCANFD800U,NETCANFD200U,NETCANFD400U,NETCANFD800U.
+2.优化启用发送和接收的线程数量,根据设备类型,动态分配.
+3.优化接收线程的接收速度.
+4.删除can::Buffer::pop中的条件变量等待.
+5.删除can::Base::recvMsg函数timeout参数.
+6.修改CAN_MAX_SEND_BUFFER_SIZE和CAN_MAX_RECV_BUFFER_SIZE宏为128.
+
+2025.3.17 版本:1.0.0.8
+1.增加多通道并行发送功能.
+
+2025.2.6 版本:1.0.0.7
+1.增加ZLG-NET-CANFD类库中自动匹配绑定地址功能.
+2.增加ZLG-NET-CANFD类库中判定绑定地址与对端地址是否正确功能.
+
+2025.1.10 版本:1.0.0.6
+1.修改枚举ProtType为ProtoType.
+
+2025.1.3 版本:1.0.0.5
+1.修复can::Msg结构体中的拷贝构造,赋值构造,移动赋值构造导致内存泄漏的bug.
+
+2024.7.12 版本:1.0.0.4
+1.修复ZLG-NET-CANFD和ZLG-USB-CANFD类库recvMsg返回大小错误的问题.
+
+2024.6.22 版本:1.0.0.3
+1.修复CAN卡停止之后,再次打开,残留缓存的问题.
+2.更改编码为gb2312.
+
+2024.6.20 版本:1.0.0.2
+1.修复关闭设备时,发送接收线程还在运行中,导致调用sendMsg,recvMsg触发空指针的问题.
+2.修复接收报文时,数组越界的问题.
+3.修复ZLGCAN动态链接库存放在C盘,调用ZCAN_SetValue无法修改xml配置文件,导致设置失败的问题.
+
+2024.6.14 版本:1.0.0.1
+1.项目开发完成.
