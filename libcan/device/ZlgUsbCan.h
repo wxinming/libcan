@@ -3,7 +3,7 @@
 
 namespace can {
 
-	class CAN_DLL_EXPORT ZlgUsbCan : public Base
+	class LIBCAN_DLL_EXPORT ZlgUsbCan : public Base
 	{
 	public:
 		ZlgUsbCan(DeviceType deviceType);

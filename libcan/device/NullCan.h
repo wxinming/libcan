@@ -3,7 +3,7 @@
 
 namespace can {
 
-	class CAN_DLL_EXPORT NullCan : public Base
+	class LIBCAN_DLL_EXPORT NullCan : public Base
 	{
 	public:
 		NullCan(DeviceType deviceType);

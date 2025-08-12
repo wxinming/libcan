@@ -26,10 +26,10 @@ bool can::ZlgUsbCan::open(const can::Device& device)
 		uint32_t deviceType = ZCAN_USBCAN2;
 		switch (m_deviceType)
 		{
-		case can::DT_ZLG_USBCAN1:
+		case DeviceType::ZLG_USBCAN1:
 			deviceType = ZCAN_USBCAN1;
 			break;
-		case can::DT_ZLG_USBCAN2:
+		case DeviceType::ZLG_USBCAN2:
 			deviceType = ZCAN_USBCAN2;
 			break;
 		default:
@@ -51,25 +51,25 @@ bool can::ZlgUsbCan::open(const can::Device& device)
 			int baudrate = 0;
 			switch (translateArbiBaud(device.arbiBaud[i]))
 			{
-			case AB_1Mbps:
+			case ArbiBaud::ARBI_1Mbps:
 				baudrate = 1000000;
 				break;
-			case AB_800Kbps:
+			case ArbiBaud::ARBI_800Kbps:
 				baudrate = 800000;
 				break;
-			case AB_500Kbps:
+			case ArbiBaud::ARBI_500Kbps:
 				baudrate = 500000;
 				break;
-			case AB_250Kbps:
+			case ArbiBaud::ARBI_250Kbps:
 				baudrate = 250000;
 				break;
-			case AB_125Kbps:
+			case ArbiBaud::ARBI_125Kbps:
 				baudrate = 125000;
 				break;
-			case AB_100Kbps:
+			case ArbiBaud::ARBI_100Kbps:
 				baudrate = 100000;
 				break;
-			case AB_50Kbps:
+			case ArbiBaud::ARBI_50Kbps:
 				baudrate = 50000;
 				break;
 			default:

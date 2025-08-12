@@ -3,7 +3,7 @@
 #include "Export.h"
 
 namespace can {
-	class CAN_DLL_EXPORT Timer 
+	class LIBCAN_DLL_EXPORT Timer 
 	{
 	public:
 		Timer();

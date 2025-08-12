@@ -197,8 +197,6 @@ can::Device::Device()
 		dataBaud[i] = 2000;
 	}
 	isExpandFrame = false;
-	bindAddress = nullptr;
-	peerAddress = nullptr;
 	peerPort = 8000;
 	connectTimeout = 100;
 }
@@ -239,13 +237,17 @@ std::ostream& operator<<(std::ostream& os, const can::Msg& msg)
 
 	char buffer[4096] = { 0 };
 	sprintf_s(buffer,
+		"[%06d],"
 		"[%d],"
 		"[%s],"
 		"[0x%x],"
+		"[%d],"
 		"[%s]\n",
+		msg.timeStamp,
 		msg.channelIndex,
-		msg.protoType == can::ProtoType::PT_CAN ? "CAN" : "CANFD",
+		msg.protoType == can::ProtoType::CAN ? "CAN" : "CANFD",
 		msg.id,
+		msg.dlc,
 		data.c_str()
 	);
 
@@ -258,40 +260,40 @@ int can::getDeviceChannelCount(DeviceType type)
 	int result = 0;
 	switch (type)
 	{
-	case can::DT_NULL_CAN:
+	case can::DeviceType::NULL_CAN:
 		result = 1;
 		break;
-	case can::DT_ZLG_USBCAN1:
+	case can::DeviceType::ZLG_USBCAN1:
 		result = 1;
 		break;
-	case can::DT_ZLG_USBCAN2:
+	case can::DeviceType::ZLG_USBCAN2:
 		result = 2;
 		break;
-	case can::DT_ZLG_USBCANFDMINI:
+	case can::DeviceType::ZLG_USBCANFDMINI:
 		result = 1;
 		break;
-	case can::DT_ZLG_USBCANFD100U:
+	case can::DeviceType::ZLG_USBCANFD100U:
 		result = 1;
 		break;
-	case can::DT_ZLG_USBCANFD200U:
+	case can::DeviceType::ZLG_USBCANFD200U:
 		result = 2;
 		break;
-	case can::DT_ZLG_USBCANFD400U:
+	case can::DeviceType::ZLG_USBCANFD400U:
 		result = 4;
 		break;
-	case can::DT_ZLG_USBCANFD800U:
+	case can::DeviceType::ZLG_USBCANFD800U:
 		result = 8;
 		break;
-	case can::DT_ZLG_NETCANFD200U:
+	case can::DeviceType::ZLG_NETCANFD200U:
 		result = 2;
 		break;
-	case can::DT_ZLG_NETCANFD400U:
+	case can::DeviceType::ZLG_NETCANFD400U:
 		result = 4;
 		break;
-	case can::DT_ZLG_NETCANFD800U:
+	case can::DeviceType::ZLG_NETCANFD800U:
 		result = 8;
 		break;
-	case can::DT_GC_USBCANFD:
+	case can::DeviceType::GC_USBCANFD:
 		result = 2;
 		break;
 	default:

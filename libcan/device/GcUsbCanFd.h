@@ -3,7 +3,7 @@
 
 namespace can {
 
-	class CAN_DLL_EXPORT GcUsbCanFd : public Base
+	class LIBCAN_DLL_EXPORT GcUsbCanFd : public Base
 	{
 	public:
 		GcUsbCanFd(DeviceType deviceType);

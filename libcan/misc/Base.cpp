@@ -1,7 +1,6 @@
 #include "Base.h"
 #include <cassert>
 
-int can::Base::s_totalBaseCounter = 0;
 can::Base::Base(DeviceType deviceType)
 	:m_deviceType(deviceType)
 {
@@ -17,7 +16,6 @@ can::Base::Base(DeviceType deviceType)
 	}
 	m_time.send.getStartTime();
 	m_time.recv.getStartTime();
-	m_currentBaseId = s_totalBaseCounter++;
 }
 
 can::Base::~Base()
@@ -32,7 +30,6 @@ can::Base::~Base()
 		delete[] m_msgs[i];
 		delete[] m_msgsBackup[i];
 	}
-	--s_totalBaseCounter;
 }
 
 void can::Base::setMatrix(can::Matrix* matrix)
@@ -81,10 +78,10 @@ void can::Base::addMsg(const can::Msg& msg, int channel)
 			break;
 		}
 		bool ceFind = false, ceSending = false;
-		if (msg.sendType == SendType::ST_CE) {
+		if (msg.sendType == SendType::CE) {
 			for (int i = 0; i < CAN_MAX_SEND_BUFFER_SIZE; ++i) {
 				if (m_msgs[channel][i].sendValid) {
-					if (m_msgs[channel][i].id == msg.id && m_msgs[channel][i].sendType == SendType::ST_CE /*&& m_msgs[channel][i].channelIndex == channel*/) {
+					if (m_msgs[channel][i].id == msg.id && m_msgs[channel][i].sendType == SendType::CE /*&& m_msgs[channel][i].channelIndex == channel*/) {
 						if (m_msgs[channel][i].sendCount > 0) {
 							ceSending = true;
 							break;
@@ -110,7 +107,7 @@ void can::Base::addMsg(const can::Msg& msg, int channel)
 			bool find = false;
 			for (int i = 0; i < CAN_MAX_SEND_BUFFER_SIZE; ++i) {
 				if (m_msgs[channel][i].sendValid) {
-					if (m_msgs[channel][i].equal(msg) && msg.sendType != SendType::ST_EVENT) {
+					if (m_msgs[channel][i].equal(msg) && msg.sendType != SendType::EVENT) {
 						m_msgs[channel][i] = msg;
 						m_msgs[channel][i].sendValid = true;
 						m_msgs[channel][i].channelIndex = channel;
@@ -279,35 +276,35 @@ void can::Base::clearBuffer(int channel)
 
 can::ArbiBaud can::Base::translateArbiBaud(int value) const
 {
-	ArbiBaud baud = AB_0Kbps;
+	ArbiBaud baud = ArbiBaud::ARBI_0Kbps;
 	switch (value)
 	{
 	case 50:
-		baud = AB_50Kbps;
+		baud = ArbiBaud::ARBI_50Kbps;
 		break;
 	case 100:
-		baud = AB_100Kbps;
+		baud = ArbiBaud::ARBI_100Kbps;
 		break;
 	case 125:
-		baud = AB_125Kbps;
+		baud = ArbiBaud::ARBI_125Kbps;
 		break;
 	case 200:
-		baud = AB_200Kbps;
+		baud = ArbiBaud::ARBI_200Kbps;
 		break;
 	case 250:
-		baud = AB_250Kbps;
+		baud = ArbiBaud::ARBI_250Kbps;
 		break;
 	case 400:
-		baud = AB_400Kbps;
+		baud = ArbiBaud::ARBI_400Kbps;
 		break;
 	case 500:
-		baud = AB_500Kbps;
+		baud = ArbiBaud::ARBI_500Kbps;
 		break;
 	case 800:
-		baud = AB_800Kbps;
+		baud = ArbiBaud::ARBI_800Kbps;
 		break;
 	case 1000:
-		baud = AB_1Mbps;
+		baud = ArbiBaud::ARBI_1Mbps;
 		break;
 	default:
 		break;
@@ -317,35 +314,35 @@ can::ArbiBaud can::Base::translateArbiBaud(int value) const
 
 can::DataBaud can::Base::translateDataBaud(int value) const
 {
-	DataBaud baud = DB_0Kbps;
+	DataBaud baud = DataBaud::DATA_0Kbps;
 	switch (value)
 	{
 	case 5000:
-		baud = DB_5Mbps;
+		baud = DataBaud::DATA_5Mbps;
 		break;
 	case 4000:
-		baud = DB_4Mbps;
+		baud = DataBaud::DATA_4Mbps;
 		break;
 	case 2000:
-		baud = DB_2Mbps;
+		baud = DataBaud::DATA_2Mbps;
 		break;
 	case 1000:
-		baud = DB_1Mbps;
+		baud = DataBaud::DATA_1Mbps;
 		break;
 	case 800:
-		baud = DB_800Kbps;
+		baud = DataBaud::DATA_800Kbps;
 		break;
 	case 500:
-		baud = DB_500Kbps;
+		baud = DataBaud::DATA_500Kbps;
 		break;
 	case 250:
-		baud = DB_250Kbps;
+		baud = DataBaud::DATA_250Kbps;
 		break;
 	case 125:
-		baud = DB_125Kbps;
+		baud = DataBaud::DATA_125Kbps;
 		break;
 	case 100:
-		baud = DB_100Kbps;
+		baud = DataBaud::DATA_100Kbps;
 		break;
 	default:
 		break;
@@ -410,6 +407,7 @@ void can::Base::formatMsg(const char* type, const can::Msg& msg, char* text, siz
 		"[%s],"
 		"[%s],"
 		"[0x%x],"
+		"[%d],"
 		"[%s],"
 		"[%06d],"
 		"[%s],"
@@ -418,11 +416,12 @@ void can::Base::formatMsg(const char* type, const can::Msg& msg, char* text, siz
 		time.wMinute,
 		time.wSecond,
 		time.wMilliseconds,
-		m_currentBaseId,
+		m_canDevice.deviceIndex,
 		msg.channelIndex,
 		type,
-		msg.protoType == ProtoType::PT_CAN ? "CAN" : "CANFD",
+		msg.protoType == ProtoType::CAN ? "CAN" : "CANFD",
 		msg.id,
+		msg.dlc,
 		data.c_str(),
 		msg.timeStamp,
 		msg.expFrame ? "true" : "false",
@@ -458,7 +457,7 @@ can::ProtoCount can::Base::getProtoCount(const can::Msg* msg, size_t size) const
 {
 	can::ProtoCount count = { 0 };
 	for (size_t i = 0; i < size; ++i) {
-		if (msg[i].protoType == PT_CAN) {
+		if (msg[i].protoType == ProtoType::CAN) {
 			++count.can;
 		}
 		else {
@@ -502,7 +501,7 @@ void can::Base::onSendMsg(int channel)
 						m_msgs[channel][i].sendProc(m_msgs[channel][i]);
 					}
 					msgs[count] = m_msgs[channel][i];
-					if (m_msgs[channel][i].sendType == SendType::ST_EVENT) {
+					if (m_msgs[channel][i].sendType == SendType::EVENT) {
 						if (--m_msgs[channel][i].sendCount <= 0) {
 							m_msgs[channel][i].sendValid = false;
 							if (m_msgs[channel][i].eventProc) {
@@ -510,7 +509,7 @@ void can::Base::onSendMsg(int channel)
 							}
 						}
 					}
-					else if (m_msgs[channel][i].sendType == SendType::ST_CE) {
+					else if (m_msgs[channel][i].sendType == SendType::CE) {
 						if (m_msgs[channel][i].sendCount > 0) {
 							if (--m_msgs[channel][i].sendCount <= 0) {
 								if (m_msgs[channel][i].eventProc) {

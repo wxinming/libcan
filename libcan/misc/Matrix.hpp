@@ -10,7 +10,7 @@ namespace can {
 	* @brief CAN矩阵
 	* 此类库可以用于处理CAN矩阵的计算及解析
 	*/
-	class CAN_DLL_EXPORT Matrix 
+	class LIBCAN_DLL_EXPORT Matrix 
 	{
 	public:
 		/*

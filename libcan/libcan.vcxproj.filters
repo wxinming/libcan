@@ -95,8 +95,16 @@
     <ClInclude Include="device\ZlgUsbCanFd.h">
       <Filter>头文件\device</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="change_logs.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="libcan.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

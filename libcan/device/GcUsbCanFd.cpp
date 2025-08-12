@@ -41,28 +41,28 @@ bool can::GcUsbCanFd::open(const can::Device& device)
 			int baudrate = 0;
 			switch (translateArbiBaud(device.arbiBaud[i]))
 			{
-			case AB_100Kbps:
+			case ArbiBaud::ARBI_100Kbps:
 				baudrate = BAUDRATE_100K;
 				break;
-			case AB_125Kbps:
+			case ArbiBaud::ARBI_125Kbps:
 				baudrate = BAUDRATE_125K;
 				break;
-			case AB_200Kbps:
+			case ArbiBaud::ARBI_200Kbps:
 				baudrate = BAUDRATE_200K;
 				break;
-			case AB_250Kbps:
+			case ArbiBaud::ARBI_250Kbps:
 				baudrate = BAUDRATE_250K;
 				break;
-			case AB_400Kbps:
+			case ArbiBaud::ARBI_400Kbps:
 				baudrate = BAUDRATE_400K;
 				break;
-			case AB_500Kbps:
+			case ArbiBaud::ARBI_500Kbps:
 				baudrate = BAUDRATE_500K;
 				break;
-			case AB_800Kbps:
+			case ArbiBaud::ARBI_800Kbps:
 				baudrate = BAUDRATE_800K;
 				break;
-			case AB_1Mbps:
+			case ArbiBaud::ARBI_1Mbps:
 				baudrate = BAUDRATE_1M;
 				break;
 			default:
@@ -73,16 +73,16 @@ bool can::GcUsbCanFd::open(const can::Device& device)
 
 			switch (translateDataBaud(device.dataBaud[i]))
 			{
-			case DB_1Mbps:
+			case DataBaud::DATA_1Mbps:
 				baudrate = DATARATE_1M;
 				break;
-			case DB_2Mbps:
+			case DataBaud::DATA_2Mbps:
 				baudrate = DATARATE_2M;
 				break;
-			case DB_4Mbps:
+			case DataBaud::DATA_4Mbps:
 				baudrate = DATARATE_4M;
 				break;
-			case DB_5Mbps:
+			case DataBaud::DATA_5Mbps:
 				baudrate = DATARATE_5M;
 				break;
 			default:
@@ -165,7 +165,7 @@ bool can::GcUsbCanFd::send(const can::Msg* msg, size_t size, int channel)
 			data[i].ID = msg[i].id;
 			data[i].DataLen = getDlc(&msg[i]);
 			memcpy(data[i].Data, msg[i].data, getDlc(&msg[i]));
-			data[i].CanORCanfdType.proto = msg[i].protoType;
+			data[i].CanORCanfdType.proto = static_cast<BYTE>(msg[i].protoType);
 			data[i].CanORCanfdType.format = m_canDevice.isExpandFrame;
 			data[i].CanORCanfdType.type = DATA_TYPE;
 			const_cast<can::Msg*>(&msg[i])->expFrame = m_canDevice.isExpandFrame;

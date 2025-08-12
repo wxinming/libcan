@@ -3,7 +3,7 @@
 
 namespace can {
 
-	class CAN_DLL_EXPORT ZlgNetCanFd : public Base
+	class LIBCAN_DLL_EXPORT ZlgNetCanFd : public Base
 	{
 	public:
 		ZlgNetCanFd(DeviceType deviceType);

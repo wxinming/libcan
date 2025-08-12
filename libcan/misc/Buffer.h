@@ -11,7 +11,7 @@ namespace can {
 	/*
 	* @brief »º³åÇø
 	*/
-	class CAN_DLL_EXPORT Buffer
+	class LIBCAN_DLL_EXPORT Buffer
 	{
 	public:
 		/*
@@ -59,7 +59,7 @@ namespace can {
 	/*
 	* @brief »º³åÇø
 	*/
-	class CAN_DLL_EXPORT Buffer
+	class LIBCAN_DLL_EXPORT Buffer
 	{
 	public:
 		/*

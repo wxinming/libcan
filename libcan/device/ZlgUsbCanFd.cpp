@@ -26,19 +26,19 @@ bool can::ZlgUsbCanFd::open(const can::Device& device)
 		uint32_t deviceType = ZCAN_USBCANFD_200U;
 		switch (m_deviceType)
 		{
-		case can::DT_ZLG_USBCANFDMINI:
+		case DeviceType::ZLG_USBCANFDMINI:
 			deviceType = ZCAN_USBCANFD_MINI;
 			break;
-		case can::DT_ZLG_USBCANFD100U:
+		case DeviceType::ZLG_USBCANFD100U:
 			deviceType = ZCAN_USBCANFD_100U;
 			break;
-		case can::DT_ZLG_USBCANFD200U:
+		case DeviceType::ZLG_USBCANFD200U:
 			deviceType = ZCAN_USBCANFD_200U;
 			break;
-		case can::DT_ZLG_USBCANFD400U:
+		case DeviceType::ZLG_USBCANFD400U:
 			deviceType = ZCAN_USBCANFD_400U;
 			break;
-		case can::DT_ZLG_USBCANFD800U:
+		case DeviceType::ZLG_USBCANFD800U:
 			deviceType = ZCAN_USBCANFD_800U;
 			break;
 		default:
@@ -75,25 +75,25 @@ bool can::ZlgUsbCanFd::open(const can::Device& device)
 			int baudrate = 0;
 			switch (translateArbiBaud(device.arbiBaud[i]))
 			{
-			case AB_1Mbps:
+			case ArbiBaud::ARBI_1Mbps:
 				baudrate = 1000000;
 				break;
-			case AB_800Kbps:
+			case ArbiBaud::ARBI_800Kbps:
 				baudrate = 800000;
 				break;
-			case AB_500Kbps:
+			case ArbiBaud::ARBI_500Kbps:
 				baudrate = 500000;
 				break;
-			case AB_250Kbps:
+			case ArbiBaud::ARBI_250Kbps:
 				baudrate = 250000;
 				break;
-			case AB_125Kbps:
+			case ArbiBaud::ARBI_125Kbps:
 				baudrate = 125000;
 				break;
-			case AB_100Kbps:
+			case ArbiBaud::ARBI_100Kbps:
 				baudrate = 100000;
 				break;
-			case AB_50Kbps:
+			case ArbiBaud::ARBI_50Kbps:
 				baudrate = 50000;
 				break;
 			default:
@@ -112,31 +112,31 @@ bool can::ZlgUsbCanFd::open(const can::Device& device)
 
 			switch (translateDataBaud(device.dataBaud[i]))
 			{
-			case DB_5Mbps:
+			case DataBaud::DATA_5Mbps:
 				baudrate = 5000000;
 				break;
-			case DB_4Mbps:
+			case DataBaud::DATA_4Mbps:
 				baudrate = 4000000;
 				break;
-			case DB_2Mbps:
+			case DataBaud::DATA_2Mbps:
 				baudrate = 2000000;
 				break;
-			case DB_1Mbps:
+			case DataBaud::DATA_1Mbps:
 				baudrate = 1000000;
 				break;
-			case DB_800Kbps:
+			case DataBaud::DATA_800Kbps:
 				baudrate = 800000;
 				break;
-			case DB_500Kbps:
+			case DataBaud::DATA_500Kbps:
 				baudrate = 500000;
 				break;
-			case DB_250Kbps:
+			case DataBaud::DATA_250Kbps:
 				baudrate = 250000;
 				break;
-			case DB_125Kbps:
+			case DataBaud::DATA_125Kbps:
 				baudrate = 125000;
 				break;
-			case DB_100Kbps:
+			case DataBaud::DATA_100Kbps:
 				baudrate = 100000;
 				break;
 			default:
@@ -257,7 +257,7 @@ bool can::ZlgUsbCanFd::send(const can::Msg* msg, size_t size, int channel)
 			std::unique_ptr<ZCAN_Transmit_Data[]> data(new ZCAN_Transmit_Data[size]);
 			memset(data.get(), 0, sizeof(ZCAN_Transmit_Data) * size);
 			for (size_t i = 0; i < size; ++i) {
-				if (msg[i].protoType != PT_CAN) {
+				if (msg[i].protoType != ProtoType::CAN) {
 					continue;
 				}
 				data[i].frame.can_id = MAKE_CAN_ID(static_cast<canid_t>(msg[i].id), m_canDevice.isExpandFrame ? 1 : 0, 0, 0);
@@ -283,7 +283,7 @@ bool can::ZlgUsbCanFd::send(const can::Msg* msg, size_t size, int channel)
 			std::unique_ptr<ZCAN_TransmitFD_Data[]> data(new ZCAN_TransmitFD_Data[size]);
 			memset(data.get(), 0, sizeof(ZCAN_TransmitFD_Data) * size);
 			for (size_t i = 0; i < size; ++i) {
-				if (msg[i].protoType != PT_CANFD) {
+				if (msg[i].protoType != ProtoType::CANFD) {
 					continue;
 				}
 				data[i].frame.can_id = MAKE_CAN_ID(static_cast<canid_t>(msg[i].id), m_canDevice.isExpandFrame ? 1 : 0, 0, 0);
@@ -326,7 +326,7 @@ size_t can::ZlgUsbCanFd::recv(can::Msg* msg, size_t size, int channel, size_t ti
 				msg[i].id = GET_ID(data[i].frame.can_id);
 				msg[i].dlc = data[i].frame.can_dlc;
 				memcpy(msg[i].data, data[i].frame.data, data[i].frame.can_dlc);
-				msg[i].protoType = ProtoType::PT_CAN;
+				msg[i].protoType = ProtoType::CAN;
 				msg[i].expFrame = IS_EFF(data[i].frame.can_id);
 				msg[i].remFrame = IS_RTR(data[i].frame.can_id);
 				msg[i].timeStamp = static_cast<int>(m_time.recv.getEndTime());
@@ -348,7 +348,7 @@ size_t can::ZlgUsbCanFd::recv(can::Msg* msg, size_t size, int channel, size_t ti
 				msg[index].id = GET_ID(data[i].frame.can_id);
 				msg[index].dlc = data[i].frame.len;
 				memcpy(msg[index].data, data[i].frame.data, data[i].frame.len);
-				msg[index].protoType = ProtoType::PT_CANFD;
+				msg[index].protoType = ProtoType::CANFD;
 				msg[index].expFrame = IS_EFF(data[i].frame.can_id);
 				msg[index].remFrame = IS_RTR(data[i].frame.can_id);
 				msg[index].timeStamp = static_cast<int>(m_time.recv.getEndTime());

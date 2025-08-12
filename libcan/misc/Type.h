@@ -24,89 +24,89 @@ namespace can {
 	//设备类型
 	enum DeviceType {
 		//空用于在没有CAN卡的情况下调试使用
-		DT_NULL_CAN,
+		NULL_CAN,
 
 		//周立功USBCAN
-		DT_ZLG_USBCAN1,
-		DT_ZLG_USBCAN2,
+		ZLG_USBCAN1,
+		ZLG_USBCAN2,
 
 		//周立功USBCANFD
-		DT_ZLG_USBCANFDMINI,
-		DT_ZLG_USBCANFD100U,
-		DT_ZLG_USBCANFD200U,
-		DT_ZLG_USBCANFD400U,
-		DT_ZLG_USBCANFD800U,
+		ZLG_USBCANFDMINI,
+		ZLG_USBCANFD100U,
+		ZLG_USBCANFD200U,
+		ZLG_USBCANFD400U,
+		ZLG_USBCANFD800U,
 
 		//周立功NETCANFD
-		DT_ZLG_NETCANFD200U,
-		DT_ZLG_NETCANFD400U,
-		DT_ZLG_NETCANFD800U,
+		ZLG_NETCANFD200U,
+		ZLG_NETCANFD400U,
+		ZLG_NETCANFD800U,
 
 		//广成USBCANFD
-		DT_GC_USBCANFD,
+		GC_USBCANFD,
 	};
 
 	//协议类型
 	enum ProtoType {
 		//标准CAN
-		PT_CAN,
+		CAN,
 
 		//CANFD
-		PT_CANFD,
+		CANFD,
 	};
 
 	//仲裁域波特率
 	enum ArbiBaud {
-		AB_1Mbps,
-		AB_800Kbps,
-		AB_500Kbps,
-		AB_400Kbps,
-		AB_250Kbps,
-		AB_200Kbps,
-		AB_125Kbps,
-		AB_100Kbps,
-		AB_50Kbps,
-		AB_0Kbps
+		ARBI_1Mbps,
+		ARBI_800Kbps,
+		ARBI_500Kbps,
+		ARBI_400Kbps,
+		ARBI_250Kbps,
+		ARBI_200Kbps,
+		ARBI_125Kbps,
+		ARBI_100Kbps,
+		ARBI_50Kbps,
+		ARBI_0Kbps
 	};
 
 	//数据域波特率
 	enum DataBaud {
-		DB_5Mbps,
-		DB_4Mbps,
-		DB_2Mbps,
-		DB_1Mbps,
-		DB_800Kbps,
-		DB_500Kbps,
-		DB_250Kbps,
-		DB_125Kbps,
-		DB_100Kbps,
-		DB_0Kbps
+		DATA_5Mbps,
+		DATA_4Mbps,
+		DATA_2Mbps,
+		DATA_1Mbps,
+		DATA_800Kbps,
+		DATA_500Kbps,
+		DATA_250Kbps,
+		DATA_125Kbps,
+		DATA_100Kbps,
+		DATA_0Kbps
 	};
 
 	//发送类型
 	enum SendType {
 		//周期
-		ST_CYCLE,
+		CYCLE,
 
 		//事件
-		ST_EVENT,
+		EVENT,
 
 		//周期/事件
-		ST_CE,
+		CE,
 
 		//激活(尚未支持)
-		ST_IFACTIVE,
+		IFACTIVE,
 	};
 
 	//报文
-	struct CAN_DLL_EXPORT Msg {
+	struct LIBCAN_DLL_EXPORT Msg {
 		/*
 		* @brief 构造
 		*/
 		Msg(int id = 0, int dlc = 8, std::initializer_list<uint8_t> dataList = { 0 }, int sendCycle = 100,
-			SendType sendType = SendType::ST_CYCLE, int sendCount = 0, int addInterval = 0,
+			SendType sendType = SendType::CYCLE, int sendCount = 0, int addInterval = 0,
 			std::function<void(Msg& msg)> sendProc = nullptr, int channelIndex = 0,
-			ProtoType protType = ProtoType::PT_CAN, bool expFrame = false, bool remFrame = false,
+			ProtoType protType = ProtoType::CAN, bool expFrame = false, bool remFrame = false,
 			int timeStamp = 0, bool sendValid = false, int sendTime = 0,
 			std::function<void(const Msg& msg)> eventProc = nullptr);
 
@@ -236,7 +236,7 @@ namespace can {
 	};
 
 	//CAN设备
-	struct CAN_DLL_EXPORT Device {
+	struct LIBCAN_DLL_EXPORT Device {
 		//构造
 		Device();
 
@@ -259,10 +259,10 @@ namespace can {
 		bool isExpandFrame;
 
 		//绑定地址,为网络CAN/CANFD所保留(绑定一个网卡去连接CAN/CANFD设备)
-		const char* bindAddress;
+		std::string bindAddress;
 
 		//对端地址,为网络CAN/CANFD所保留
-		const char* peerAddress;
+		std::string peerAddress;
 
 		//对端端口,为网络CAN/CANFD所保留
 		int peerPort;
@@ -274,7 +274,7 @@ namespace can {
 	class Buffer;
 
 	//CAN通道
-	struct CAN_DLL_EXPORT Channel {
+	struct LIBCAN_DLL_EXPORT Channel {
 		//构造
 		Channel();
 
@@ -295,7 +295,7 @@ namespace can {
 	};
 
 	//互斥锁
-	struct CAN_DLL_EXPORT Mutex {
+	struct LIBCAN_DLL_EXPORT Mutex {
 		std::mutex send;
 		std::mutex recv;
 		std::mutex proc[CAN_MAX_CHANNEL_COUNT];
@@ -304,13 +304,13 @@ namespace can {
 	};
 
 	//时间
-	struct CAN_DLL_EXPORT Time {
+	struct LIBCAN_DLL_EXPORT Time {
 		Timer send;
 		Timer recv;
 	};
 
 	//期望
-	struct CAN_DLL_EXPORT Future {
+	struct LIBCAN_DLL_EXPORT Future {
 		std::future<void> send[CAN_MAX_CHANNEL_COUNT];
 
 		//单线程处理可能会有问题,uds接收连续帧时,可能会造成STMin超时,需要多线程对应多通道
@@ -318,7 +318,7 @@ namespace can {
 	};
 
 	//协议数量
-	struct CAN_DLL_EXPORT ProtoCount {
+	struct LIBCAN_DLL_EXPORT ProtoCount {
 		size_t can;
 		size_t canfd;
 	};
@@ -327,5 +327,5 @@ namespace can {
 	int getDeviceChannelCount(DeviceType type);
 }
 
-std::ostream& operator<<(std::ostream& os, const can::Msg& msg);
+LIBCAN_DLL_EXPORT std::ostream& operator<<(std::ostream& os, const can::Msg& msg);
 

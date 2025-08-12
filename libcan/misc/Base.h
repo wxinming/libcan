@@ -7,7 +7,7 @@
 
 namespace can {
 	//基类
-	class CAN_DLL_EXPORT Base 
+	class LIBCAN_DLL_EXPORT Base 
 	{
 	public:
 		//发送回调
@@ -117,7 +117,7 @@ namespace can {
 		* @param[in] channel 通道
 		* @return void
 		*/
-		void addMsg(int id, SendProc proc, int period, SendType type = SendType::ST_CYCLE, int count = 0, int interval = 0, int channel = 0);
+		void addMsg(int id, SendProc proc, int period, SendType type = SendType::CYCLE, int count = 0, int interval = 0, int channel = 0);
 
 		/*
 		* @brief 添加报文(异步)
@@ -409,11 +409,5 @@ namespace can {
 
 		//CAN通道
 		can::Channel m_canChannel[CAN_MAX_CHANNEL_COUNT];
-
-		//总基类计数器,用于统计new了多少类,用于判断当前为第几个设备
-		static int s_totalBaseCounter;
-
-		//当前基类编号
-		int m_currentBaseId = 0;
 	};
 }

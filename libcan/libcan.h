@@ -7,12 +7,12 @@ namespace can {
 	* @param[in] type 设备类型
 	* @return std::shared_ptr<can::Base>
 	*/
-	CAN_DLL_EXPORT std::shared_ptr<can::Base> autoReleaseNew(can::DeviceType type);
+	LIBCAN_DLL_EXPORT std::shared_ptr<can::Base> autoReleaseNew(can::DeviceType type);
 
 	/*
-	* @brief 获取支持的设备类型
+	* @brief 获取支持的设备名称
 	* @return std::vector<std::string>
 	*/
-	CAN_DLL_EXPORT std::vector<std::string> getSupportDeviceType();
+	LIBCAN_DLL_EXPORT std::vector<std::string> getSupportDeviceNames();
 }
 
