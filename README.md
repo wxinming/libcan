@@ -14,7 +14,9 @@ int main()
     auto cansp = can::autoReleaseNew(can::ZLG_USBCANFD200U);
 
     // 打开CAN日志文件
-    FILE* fp = fopen("canlog.txt", "w");
+    FILE* fp[2] = { nullptr };
+    fp[0] = fopen("canlog0.txt", "w");
+    fp[1] = fopen("canlog1.txt", "w");
     
     do {
         // 设置过滤的ID
@@ -23,14 +25,23 @@ int main()
         // 调试控制台输出日志
         cansp->setOutputLog(true);
 
-        // 注册报文回调并且将日志写入到文件中
+        // 注册通道0报文回调并且将日志写入到文件中
         cansp->setMsgProc([cansp, fp](const char* direction, const can::Msg& msg) {
 	        std::cout << direction << "->" << msg << std::endl;
-            if (fp) {
-                fprintf(fp, "%s", cansp->fmtMsg(direction, msg).c_str());
-                fflush(fp);
+            if (fp[0]) {
+                fprintf(fp[0], "%s", cansp->fmtMsg(direction, msg).c_str());
+                fflush(fp[0]);
             }
-        });
+        }, 0);
+
+        // 注册通道1报文回调并且将日志写入到文件中
+        cansp->setMsgProc([cansp, fp](const char* direction, const can::Msg& msg) {
+	        std::cout << direction << "->" << msg << std::endl;
+            if (fp[1]) {
+                fprintf(fp[1], "%s", cansp->fmtMsg(direction, msg).c_str());
+                fflush(fp[1]);
+            }
+        }, 1);
 
         // 创建摩托罗拉LSB的CAN矩阵算法类
         can::Matrix matrix(can::Matrix::MOTOROLA_LSB);
@@ -92,8 +103,12 @@ int main()
     } while(false);
 
     // 关闭CAN日志文件
-    if (fp) {
-        fclose(fp);
+    if (fp[0]) {
+        fclose(fp[0]);
+    }
+
+    if (fp[1]) {
+        fclose(fp[1]);
     }
     return 0;
 }
